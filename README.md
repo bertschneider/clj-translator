@@ -1,8 +1,8 @@
-clj-translator
+ï»¿clj-translator
 ==================
 
 This little clojure app uses the Google Translation API to translate text from a base to a target language.
-To do so a simple url call is sufficient, so the programm isnt very complex.
+To do so a simple url call via Clojures http-agent is sufficient.
 
 Example
 -----------
@@ -11,8 +11,8 @@ Example
 	user> (translate :de :en "Die Gedanken sind frei!")
 	"The thoughts are free!"
 	user> (translate :en :de "size")
-	"Größe"
+	"GrÃ¶ÃŸe"
 
 Problems
 -----------
-There are some problems with some unicode characters.
+There are some problems with unicode characters.
