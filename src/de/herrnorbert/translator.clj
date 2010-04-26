@@ -1,8 +1,10 @@
 (ns de.herrnorbert.translator
   "A little translator which uses the Google Translation API"
   (:gen-class)
-  (:use [de.herrnorbert.utils.url-utils]
-        [de.herrnorbert.utils.request-utils]))
+  (:use [de.herrnorbert.languages]
+        [de.herrnorbert.utils.url-utils]
+        [de.herrnorbert.utils.request-utils])
+  (:import (java.net URLDecoder)))
 
 ;
 ; ---- Some constants ----
@@ -34,6 +36,11 @@
   "Translates the given text from :from to :to via Googles Translation API.
   from and to have to be valid language keys!
   Example: (translate :en :de \"Die Gendanken sind frei!\""
-  (get-in
-   (request-json-url (build-translate-url from to text))
-   base-response-path))
+  (-> (build-translate-url from to text)
+      (request-json-url)
+      (get-in base-response-path)
+      (URLDecoder/decode)))
+
+(defn print-all-translations [from text]
+  (for [[k v] languages]
+    (translate from v text)))
