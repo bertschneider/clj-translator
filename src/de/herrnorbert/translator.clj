@@ -1,16 +1,13 @@
 (ns de.herrnorbert.translator
-  "A little translator which uses the Google Translation API"
+  "A little translator which uses the Google Translation API."
   (:gen-class)
-  (:use [de.herrnorbert.languages]
-        [de.herrnorbert.utils.url-utils]
-        [de.herrnorbert.utils.request-utils])
-  (:import (java.net URLDecoder)))
+  (:use [de.herrnorbert.languages]))
 
 ;
 ; ---- Some constants ----
 ;
 (def base-url "http://ajax.googleapis.com/ajax/services/language/translate")
-(def base-response-path ["responseData" "translatedText"])
+(def base-response-path [:content :responseData :translatedText])
 (def base-params {:v "1.0",
                   :q ""
                   :langpair ""})
@@ -24,10 +21,10 @@
 
 (defn build-translate-url [from to text]
   "Builds the url of the translation request."
-  (build-url base-url
-             (-> base-params
-                 (assoc :langpair (trans-param from to))
-                 (assoc :q text))))
+  (str base-url "?" (com.twinql.clojure.http/encode-query
+                     (-> base-params
+                         (assoc :langpair (trans-param from to))
+                         (assoc :q text)))))
 
 ;
 ; ---- Translate ----
@@ -37,10 +34,6 @@
   from and to have to be valid language keys!
   Example: (translate :en :de \"Die Gendanken sind frei!\""
   (-> (build-translate-url from to text)
-      (request-json-url)
-      (get-in base-response-path)
-      (URLDecoder/decode)))
+      (com.twinql.clojure.http/get :as :json :headers {"charset" "utf-8"})
+      (get-in base-response-path)))
 
-(defn print-all-translations [from text]
-  (for [[k v] languages]
-    (translate from v text)))

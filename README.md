@@ -2,7 +2,7 @@
 ==================
 
 This little clojure app uses the Google Translation API to translate text from a base to a target language.
-To do so a simple url call via Clojures http-agent is sufficient.
+To do so a simple url call via the Apache HttpClient wrapper is sufficient.
 
 Example
 -----------
@@ -13,6 +13,4 @@ Example
 	user> (translate :en :de "size")
 	"Größe"
 
-Problems
------------
-There are some problems with unicode characters.
+
